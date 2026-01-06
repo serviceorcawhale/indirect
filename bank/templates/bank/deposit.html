@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+{% load static %}
+{%  block content %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaTrust Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ===== Back Icon ===== */
+    .back-icon {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 1.5em;
+      color: #00b060;
+      cursor: pointer;
+      background: #fff;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      z-index: 1000;
+    }
+
+    .back-icon:hover {
+      background: #00b060;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    h2 {
+      font-size: 1.4em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ===== Transfer Options ===== */
+    .transfer-option {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .transfer-option:hover {
+      transform: translateY(-3px);
+      border: 1px solid #00b060;
+    }
+
+    .icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4em;
+      color: #fff;
+    }
+
+    .wire { background: #002855; }
+    .crypto { background: #f7931a; }
+    .paypal { background: #0070ba; }
+    .wise { background: #00b9a1; }
+    .cashapp { background: #000; }
+
+    /* ===== Upload Section ===== */
+    .upload-section {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      width: 90%;
+      max-width: 400px;
+      background: linear-gradient(135deg, #00b060, #00743c);
+      color: white;
+      font-weight: 600;
+      padding: 14px 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1em;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .upload-btn:hover {
+      background: linear-gradient(135deg, #00c46a, #00924f);
+      transform: translateY(-2px);
+    }
+
+    .upload-btn i {
+      margin-right: 8px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* ===== Modal Styling ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      width: 100%;
+      max-width: 420px;
+      animation: popIn 0.3s ease;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.3em;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .modal h3 {
+      text-align: center;
+      margin-top: 0;
+      color: #00b060;
+      font-weight: 600;
+    }
+
+    .input-field {
+      margin-top: 15px;
+      position: relative;
+    }
+
+    .input-field label {
+      font-size: 0.9em;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-field input {
+      width: 100%;
+      padding: 10px;
+      border: 1.5px solid #ccc;
+      border-radius: 10px;
+      font-size: 0.9em;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .input-field input:focus {
+      border-color: #00b060;
+      box-shadow: 0 0 5px rgba(0,176,96,0.2);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 8px;
+      top: 35px;
+      background: #00b060;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      background: #00b060;
+    }
+
+    .submit-btn:hover {
+      background: #008c4a;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      .transfer-option {
+        padding: 12px;
+      }
+      .modal-content {
+        padding: 20px;
+      }
+      .upload-btn {
+        width: 95%;
+        font-size: 0.95em;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Back to Dashboard Icon -->
+  <div class="back-icon" onclick="window.location.href='{% url 'dashboard' %}'">
+    <i class="fa fa-arrow-left"></i>
+  </div>
+
+  <div class="container">
+    <h2>Select Transfer Method</h2>
+
+    <div class="transfer-option" onclick="openModal('wire')">
+      <div class="icon wire"><i class="fa fa-university"></i></div>
+      <div><h4>Wire Transfer</h4><p>International bank transfer.</p></div>
+    </div>
+
+    <div class="transfer-option" onclick="openModal('crypto')">
+      <div class="icon crypto"><i class="fab fa-bitcoin"></i></div>
+      <div><h4>Cryptocurrency</h4><p>Send funds to a wallet address.</p></div>
+    </div>
+
+    <div class="transfer-option" onclick="openModal('paypal')">
+      <div class="icon paypal"><i class="fab fa-paypal"></i></div>
+      <div><h4>PayPal</h4><p>Transfer via email account.</p></div>
+    </div>
+
+    <div class="transfer-option" onclick="openModal('wise')">
+      <div class="icon wise"><i class="fa fa-exchange-alt"></i></div>
+      <div><h4>Wise Transfer</h4><p>Send with lower fees.</p></div>
+    </div>
+
+    <div class="transfer-option" onclick="openModal('cashapp')">
+      <div class="icon cashapp"><i class="fa fa-dollar-sign"></i></div>
+      <div><h4>Cash App</h4><p>Quick mobile transfers.</p></div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <label for="fileUpload" class="upload-btn">
+        <i class="fa fa-upload"></i> Upload Payment Receipt
+      </label>
+      <input type="file" id="fileUpload" hidden>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="popup" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()"><i class="fa fa-times"></i></span>
+      <h3 id="modalTitle"></h3>
+      <div id="formFields"></div>
+      <button class="submit-btn">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('popup');
+    const title = document.getElementById('modalTitle');
+    const formFields = document.getElementById('formFields');
+
+    function openModal(type) {
+      modal.style.display = 'flex';
+      formFields.innerHTML = '';
+
+      switch (type) {
+        case 'wire':
+          title.textContent = 'Wire Transfer';
+          formFields.innerHTML = `
+            ${makeInput('SWIFT Code', 'ABCDUS33XXX', true)}
+            ${makeInput('First Name', 'Luke', true)}
+            ${makeInput('Last Name', 'Johnson', true)}
+            ${makeInput('Amount (€)', '', false)}
+          `;
+          break;
+        case 'crypto':
+          title.textContent = 'Cryptocurrency';
+          formFields.innerHTML = `
+            ${makeInput('Wallet Address', 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', true)}
+            ${makeInput('Amount (BTC)', '', false)}
+          `;
+          break;
+        case 'paypal':
+          title.textContent = 'PayPal';
+          formFields.innerHTML = `
+            ${makeInput('PayPal Email', 'user@example.com', true)}
+            ${makeInput('Amount (€)', '', false)}
+          `;
+          break;
+        case 'wise':
+          title.textContent = 'Wise Transfer';
+          formFields.innerHTML = `
+            ${makeInput('Recipient Email', 'recipient@wise.com', true)}
+            ${makeInput('Amount (€)', '', false)}
+          `;
+          break;
+        case 'cashapp':
+          title.textContent = 'Cash App';
+          formFields.innerHTML = `
+            ${makeInput('Cash Tag', '$username', true)}
+            ${makeInput('Amount (€)', '', false)}
+          `;
+          break;
+      }
+    }
+
+    function makeInput(label, value, readonly = false) {
+      const id = label.replace(/\s+/g, '').toLowerCase();
+      return `
+        <div class="input-field">
+          <label>${label}</label>
+          <input type="text" id="${id}" value="${value}" ${readonly ? 'readonly' : ''}>
+          ${readonly ? `<button class="copy-btn" onclick="copyField('${id}')">Copy</button>` : ''}
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function copyField(id) {
+      const field = document.getElementById(id);
+      field.select();
+      navigator.clipboard.writeText(field.value);
+      alert(`${field.value} copied to clipboard`);
+    }
+
+    window.onclick = function(e) {
+      if (e.target === modal) closeModal();
+    };
+  </script>
+  <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=v9YQHkBe68HP"></script>
+    <script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper"}</script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+</body>
+{%  endblock content %}
+</html>

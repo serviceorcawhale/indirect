@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sure Trust - Detailed Receipt</title>
+  <style>
+    :root{--green-600:#16a34a;--green-700:#15803d;--muted:#6b7280}
+    body{font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#ecfdf5,#f8fffb);padding:32px;display:flex;flex-direction:column;align-items:center}
+    .receipt{width:520px;background:#fff;border-radius:14px;padding:24px 26px;box-shadow:0 14px 36px rgba(6,95,70,0.06);border-top:8px solid var(--green-600)}
+    .top{display:flex;align-items:center;gap:12px}
+    .logo{width:78px;height:78px;border-radius:10px;background:linear-gradient(135deg,var(--green-600),#22c55e);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+    .bank-info h1{margin:0;font-size:18px;color:var(--green-700);letter-spacing:0.6px}
+    .bank-info p{margin:3px 0;color:var(--muted);font-size:13px}
+
+    .meta{display:flex;justify-content:space-between;margin-top:14px;gap:12px}
+    .meta .left, .meta .right{flex:1}
+    .meta div{display:flex;justify-content:space-between;padding:8px 10px;border-radius:8px;background:#f8fff9;border:1px solid rgba(21,128,61,0.06);margin-bottom:8px}
+    .meta div small{color:var(--muted)}
+
+    .section{margin-top:12px}
+    .section h3{margin:0 0 8px 0;font-size:13px;color:#111}
+    .items{border-top:1px dashed #e6f4ea;padding-top:10px}
+
+    .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1faf2}
+    .row:last-child{border-bottom:none}
+    .label{color:var(--muted)}
+    .value{font-weight:700;color:#0f172a}
+
+    .amount-big{font-size:22px;font-weight:800;color:var(--green-700);text-align:right;margin-top:8px}
+
+    .qr-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;gap:12px}
+    .qr{width:110px;height:110px;background:#fff;border:1px solid #e6f4ea;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .signature{flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fbfff8,#f7fff5);border:1px solid rgba(21,128,61,0.06)}
+    .signature .line{height:1px;background:#cbd5d1;margin:28px 0}
+    .signature small{color:var(--muted)}
+
+    .footer{margin-top:18px;padding-top:10px;border-top:1px dashed #e6f4ea;color:var(--muted);font-size:13px}
+
+    /* smaller download button placed below */
+    .download{
+      background:linear-gradient(90deg,var(--green-600),#22c55e);
+      color:#fff;
+      border:0;
+      padding:8px 16px;
+      border-radius:20px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:13px;
+      margin-top:24px;
+      box-shadow:0 4px 12px rgba(22,163,74,0.25);
+      transition:all 0.2s ease;
+    }
+    .download:hover{transform:scale(1.05);background:linear-gradient(90deg,#22c55e,var(--green-600))}
+    .download:disabled{opacity:0.6;cursor:not-allowed}
+
+    .spacer{height:8px}
+    .big-gap{height:18px}
+  </style>
+</head>
+<body>
+  <div class="receipt" id="receipt">
+    <div class="top">
+      <div class="logo">SB</div>
+      <div class="bank-info">
+        <h1>Sure Trust</h1>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div style="font-size:12px;color:var(--muted)">Official Receipt</div>
+        <div style="font-weight:800">ST-2025-9812</div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="left">
+        <div><small>Account Name</small><span style="font-weight:700">&nbsp;&nbsp;{{transfer.first_name}} {{transfer.last_name}}</span></div>
+        <div><small>Account Number</small><span style="font-weight:700">&nbsp;&nbsp;{{transfer.account_number}}</span></div>
+      </div>
+      <div class="right">
+        <div><small>Date</small><span style="font-weight:700">&nbsp;&nbsp;{{transfer.date}}</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Transaction details</h3>
+      <div class="items">
+        <div class="row"><div class="label">Payment Status</div><div class="value">{{transfer.status}}</div></div>
+        <div class="row"><div class="label">Payment Method</div><div class="value">{{transfer.gateway}}</div></div>
+        <div class="row"><div class="label">Reference</div><div class="value">{{transfer.reference}}</div></div>
+      </div>
+    </div>
+
+    <div class="big-gap"></div>
+
+    <div class="amount-big">{{request.user.deposit.currency}}{{transfer.amount}}</div>
+
+    <div class="qr-sign">
+      <div class="signature">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <small>Processed by</small>
+            <div style="font-weight:700;margin-top:6px">Teller 045</div>
+          </div>
+          <div style="text-align:right">
+            <small>Date/Time</small>
+            <div style="font-weight:700;margin-top:6px">{{transfer.date}}</div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="footer">
+      This receipt confirms that the transaction above has been processed and recorded by Sure Trust. Keep this receipt for your records. For enquiries contact customer care or visit a branch.
+    </div>
+  </div>
+
+  <button class="download" id="download">Download Receipt</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    (function init(){
+      const now = new Date();
+      const d = now.toLocaleDateString();
+      const t = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      document.querySelector('.meta .right div:nth-child(1) span').textContent = '\u00A0\u00A0' + d;
+      document.querySelector('.signature div:nth-child(1) div:nth-child(2)').textContent = '\u00A0\u00A0' + d + ' ' + t;
+    })();
+
+    document.getElementById('download').addEventListener('click', async function(){
+      const btn = this; btn.disabled = true; btn.textContent = 'Preparing...';
+      try{
+        const node = document.getElementById('receipt');
+        const canvas = await html2canvas(node, {scale:2});
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url; a.download = 'Standard_Bank_Receipt.png'; document.body.appendChild(a); a.click(); a.remove();
+      }catch(err){
+        console.error(err); alert('Failed to generate image. Check console for details.');
+      }finally{ btn.disabled = false; btn.textContent = 'Download Receipt'; }
+    });
+  </script>
+</body>
+</html>

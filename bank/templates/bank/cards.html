@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card </title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* ===== Back Button ===== */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+  }
+
+  .back-btn:hover {
+    background: #e9f2ff;
+    color: #007bff;
+  }
+
+  .back-btn i {
+    margin-right: 8px;
+  }
+
+  /* ===== Container ===== */
+  .card-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 40px auto 0;
+    text-align: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  }
+
+  .status {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #e8f9f0;
+    color: #1abc9c;
+    border-radius: 30px;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .button-group button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: 0.3s;
+  }
+
+  .deactivate { background: #fff6e5; color: #d57d00; }
+  .block { background: #ffe6e6; color: #d93d3d; }
+  .transactions { background: #eef2ff; color: #3a57e8; }
+
+  /* ===== Card Flip ===== */
+  .card-flip {
+    perspective: 1000px;
+    width: 100%;
+    height: 230px;
+    margin-bottom: 15px;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s ease;
+    transform-style: preserve-3d;
+  }
+
+  .flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .card-front {
+    background: linear-gradient(135deg, #ff6a00, #ee0979);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card-back {
+    background: linear-gradient(135deg, #ee0979, #ff6a00);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .chip {
+    width: 45px;
+    height: 32px;
+    background: gold;
+    border-radius: 6px;
+  }
+
+  .card-number {
+    font-size: 1.3em;
+    letter-spacing: 3px;
+    margin: 10px 0;
+  }
+
+  .card-holder,
+  .valid-thru {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+  }
+
+  /* ===== Card Back ===== */
+  .mag-strip {
+    background: #000;
+    height: 40px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+  }
+
+  .cvv-box {
+    background: #fff;
+    color: #000;
+    border-radius: 6px;
+    padding: 5px 10px;
+    text-align: right;
+    width: 60px;
+    margin-left: auto;
+    font-weight: bold;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+    gap: 10px;
+  }
+
+  .actions button {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: 0.3s;
+  }
+
+  .flip-btn { background: #fff; color: #000; border: 1px solid #ddd; }
+  .details-btn { background: #1abc9c; color: #fff; }
+
+  @media (max-width: 480px) {
+    .card-container {
+      padding: 18px;
+      margin-top: 25px;
+    }
+
+    .card-flip {
+      height: 200px;
+    }
+
+    .card-number {
+      font-size: 1.1em;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Back to Dashboard -->
+<a href="{% url 'dashboard' %}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+
+<div class="card-container">
+  <div class="status"><i class="fa-solid fa-circle-check"></i> Active</div>
+
+  <div class="button-group">
+    <button class="deactivate"><i class="fa-solid fa-ban"></i> Deactivate</button>
+    <button class="block"><i class="fa-solid fa-lock"></i> Block Card</button>
+    <button class="transactions"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</button>
+  </div>
+
+  <!-- Card -->
+  <div class="card-flip">
+    <div class="card-inner" id="flipCard">
+      <!-- Front -->
+      <div class="card-front">
+        <div>
+          <div class="chip"></div>
+          <h3 style="margin:10px 0 0;">SureTrust Bank</h3>
+          <p style="opacity:0.9; font-size:0.85em;">Virtual Banking</p>
+        </div>
+
+        <div>
+          <div class="card-number" id="cardNum">•••• •••• •••• {{ request.user.card.card_number|slice:"-4:" }}</div>
+          <div class="card-holder">
+            <span>CARD HOLDER<br><strong>{{ user.first_name }} {{ user.last_name }}</strong></span>
+            <span>VALID THRU<br><strong>{{ request.user.card.exp_date }}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back -->
+      <div class="card-back">
+        <div>
+          <div class="mag-strip"></div>
+          <div class="cvv-box" id="cvvBox">***</div>
+        </div>
+        <div style="font-size:0.85em;">
+          <p>Bank: SureTrust Bank</p>
+          <p>Customer Support: +44 *** *** ***</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="actions">
+    <button class="flip-btn" onclick="flipCard()"><i class="fa-solid fa-retweet"></i> Flip Card</button>
+    <button class="details-btn" onclick="toggleDetails()"><i class="fa-solid fa-eye"></i> Show Details</button>
+  </div>
+</div>
+
+<script>
+  const flip = document.getElementById("flipCard");
+  const cardNum = document.getElementById("cardNum");
+  const cvvBox = document.getElementById("cvvBox");
+  const detailsBtn = document.querySelector(".details-btn");
+
+  const fullCardNumber = "{{ request.user.card.card_number }}";
+  const maskedCardNumber = "•••• •••• •••• " + fullCardNumber.slice(-4);
+
+  function flipCard() {
+    flip.classList.toggle("flipped");
+  }
+
+  function toggleDetails() {
+    if (cardNum.textContent.includes("•")) {
+      cardNum.textContent = fullCardNumber;
+      cvvBox.textContent = "{{ request.user.card.cvv }}";
+      detailsBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Details';
+    } else {
+      cardNum.textContent = maskedCardNumber;
+      cvvBox.textContent = "***";
+      detailsBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Show Details';
+    }
+  }
+</script>
+<script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=v9YQHkBe68HP"></script>
+<script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper"}</script>
+<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+</body>
+</html>

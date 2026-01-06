@@ -1,0 +1,101 @@
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background-color: #f5f8fa;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .transfer-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 40px 30px;
+        transition: all 0.3s ease;
+    }
+
+    .transfer-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .transfer-card h2 {
+        font-weight: 700;
+        font-size: 1.7rem;
+        text-align: center;
+        color: #003366;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #33475b;
+    }
+
+    input.form-control {
+        border-radius: 10px;
+        border: 1px solid #ccd6dd;
+        padding: 10px 15px;
+        font-size: 15px;
+        transition: border 0.2s ease;
+    }
+
+    input.form-control:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 4px rgba(0, 102, 204, 0.3);
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        border: none;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #004c99;
+        transform: scale(1.03);
+    }
+
+    .footer-note {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 13px;
+        color: #778899;
+    }
+</style>
+
+<div class="transfer-card">
+    <h2>Generate Bulk Transfers (U.S. Banks Only)</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Number of Transfers (max 300)</label>
+            <input type="number" name="count" class="form-control" min="1" max="300" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Start Date</label>
+            <input type="date" name="start_date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">End Date</label>
+            <input type="date" name="end_date" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">
+            <i class="bi bi-lightning-charge me-1"></i> Generate Transfers
+        </button>
+    </form>
+
+    <div class="footer-note">
+        Transfers will automatically include random U.S. banks, amounts, and dates.
+    </div>
+</div>
+{% endblock %}

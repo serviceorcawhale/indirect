@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+{% load static %}
+{% block content %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction History - NovaTrust Bank</title>
+
+  <link rel="icon" href="{% static 'assets/images/logo/favicon.png' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="{% static 'assets/css/vendors/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/vendors/iconsax.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: #f9fafc;
+      color: #333;
+    }
+
+    .header-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+    }
+
+    h2 {
+      font-weight: 700;
+      color: #122636;
+    }
+
+    .table {
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .table th {
+      background-color: #122636;
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .table td {
+      vertical-align: middle;
+    }
+
+    .status-pending { color: #f0ad4e; font-weight: 600; }
+    .status-success { color: #00b060; font-weight: 600; }
+    .status-failed  { color: #dc3545; font-weight: 600; }
+
+    .btn-view, .btn-print {
+      background-color: #00b060;
+      color: #fff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      transition: 0.3s;
+    }
+
+    .btn-view:hover, .btn-print:hover {
+      background-color: #00743c;
+    }
+
+    /* Receipt Styles (Hidden by Default) */
+    .receipt {
+      display: none;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    .receipt h4 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #122636;
+      font-weight: 700;
+    }
+
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      .printable, .printable * { visibility: visible; }
+      .printable { position: absolute; top: 0; left: 0; width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="section-t-space">
+    <div class="custom-container">
+      <div class="header-panel">
+        <a href="{% url 'dashboard' %}" class="back-btn">
+          <i class="icon" data-feather="arrow-left"></i>
+        </a>
+        <h2>Transaction History</h2>
+      </div>
+    </div>
+  </header>
+
+  <!-- Transaction History Table -->
+  <section class="section-b-space">
+    <div class="custom-container">
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Recipts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Transfer Example -->
+										{% for transfer in transfer %}
+
+            <tr>
+              <td>{{ transfer.reference }}</td>
+              <td><i class="iconsax categories-icon" data-icon="repeat"></i> {{ transfer.gateway }}</td>
+              <td>{{ request.user.deposit.currency }}{{ transfer.amount }}</td>
+              <td class="status-pending">{{ transfer.status }}</td>
+              <td>{{ transfer.date }}</td>
+              <td class="btn-print">
+                <a href="{% url 'success' transfer.id %}" style="font-size: large; color: #fff; box-sizing: border-box; background-color: #05a347;">Print</a>
+              </td>
+            </tr>
+            {% endfor %}
+            <!-- Withdraw Example -->
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+  <!-- JS Files -->
+  <script src="{% static 'assets/js/feather.min.js' %}"></script>
+  <script src="{% static 'assets/js/custom-feather.js' %}"></script>
+  <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+  <script>
+    function printReceipt(receiptId) {
+      const content = document.getElementById(receiptId).innerHTML;
+      const printWindow = window.open('', '', 'width=400,height=600');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Receipt</title>
+            <style>
+              body { font-family: 'Lato', sans-serif; padding: 20px; }
+              h4 { text-align: center; color: #122636; }
+              .receipt-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+            </style>
+          </head>
+          <body>${content}</body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  </script>
+  <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=adM8ivJRMWDn"></script>
+    <script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper"}</script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+    <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=v9YQHkBe68HP"></script>
+</body>
+{% endblock content %}
+</html>

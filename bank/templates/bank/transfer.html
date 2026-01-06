@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+{% load static %}
+{% block content %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaTrust Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --green1: #00b060;
+      --green2: #00743c;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .back-icon {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 1.5em;
+      color: var(--green1);
+      cursor: pointer;
+      background: #fff;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      z-index: 1000;
+    }
+
+    .back-icon:hover {
+      background: var(--green1);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    h2 {
+      font-size: 1.4em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .dropdown {
+      margin-bottom: 25px;
+    }
+
+    .dropdown select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid #ccc;
+      font-size: 1em;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .dropdown select:focus {
+      border-color: var(--green1);
+      box-shadow: 0 0 5px rgba(0,176,96,0.2);
+    }
+
+    .transfer-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .transfer-card.active {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .transfer-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4em;
+      color: #fff;
+    }
+
+    .wire { background: #002855; }
+    .crypto { background: #f7931a; }
+    .paypal { background: #0070ba; }
+    .wise { background: #00b9a1; }
+    .cashapp { background: #000; }
+
+    h4 { margin: 0; font-size: 1.1em; }
+    p { margin: 3px 0 0; font-size: 0.9em; color: #777; }
+
+    .input-field { margin-top: 12px; }
+
+    .input-field label {
+      display: block;
+      font-size: 0.85em;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .input-field input {
+      width: 100%;
+      padding: 10px;
+      border: 1.5px solid #ccc;
+      border-radius: 10px;
+      font-size: 0.9em;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .input-field input:focus {
+      border-color: var(--green1);
+      box-shadow: 0 0 5px rgba(0,176,96,0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      background: linear-gradient(135deg, var(--green1), var(--green2));
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #00c46a, #00924f);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .transfer-card { padding: 15px; }
+      .submit-btn { width: 100%; font-size: 0.95em; padding: 12px 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="back-icon" onclick="window.location.href='{% url 'dashboard' %}'">
+    <i class="fa fa-arrow-left"></i>
+  </div>
+
+  <div class="container">
+    <h2>Select Transfer Type</h2>
+
+    <div class="dropdown">
+      <select id="transferSelect" onchange="showCard()">
+        <option value="">-- Choose Transfer Method --</option>
+        <option value="wire">Transfer</option>
+        <option value="crypto">Cryptocurrency</option>
+        <option value="paypal">PayPal</option>
+        <option value="wise">Wise Transfer</option>
+        <option value="cashapp">Cash App</option>
+      </select>
+    </div>
+
+    <!-- Wire Transfer -->
+    <form method="POST" class="transfer-card" id="wire">
+      {% csrf_token %}
+      <div class="transfer-header">
+        <div class="icon wire"><i class="fa fa-university"></i></div>
+        <div><h4>Transfer</h4><p>Bank transfer</p></div>
+      </div>
+      <div class="input-field"><label>SWIFT Code</label><input type="text" name="swift_code" placeholder="Enter SWIFT Code"></div>
+      <div class="input-field"><label>First Name</label><input type="text" name="first_name" placeholder="Enter first name"></div>
+      <div class="input-field"><label>Last Name</label><input type="text" name="last_name" placeholder="Enter last name"></div>
+      <div class="input-field"><label>Bank Name</label><input type="text" name="bank_name" placeholder="Enter bank name"></div>
+      <div class="input-field"><label>Account Number</label><input type="text" name="account_number" placeholder="Enter account number"></div>
+      <div class="input-field"><label>Amount</label><input type="number" name="amount" placeholder="Enter amount">
+        <input type="hidden" name="status" value="Pending">
+        <input type="hidden" name="name" value="{{user.username}}">
+        <input type="hidden" id="date" name="date" value="">
+        <input type="hidden" id="reference" name="reference" value="">
+        <input type="hidden" name="gateway" value="wire transfer">
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form>
+
+    <!-- Crypto -->
+    <form method="POST" class="transfer-card" id="crypto">
+      {% csrf_token %}
+      <div class="transfer-header">
+        <div class="icon crypto"><i class="fab fa-bitcoin"></i></div>
+        <div><h4>Cryptocurrency</h4><p>Send funds to wallet</p></div>
+      </div>
+      <div class="input-field"><label>Wallet Address</label><input type="text" name="wallet" placeholder="Enter wallet address"></div>
+      <div class="input-field"><label>Amount (BTC)</label><input type="number" name="amount" placeholder="Enter amount">
+        <input type="hidden" name="status" value="Pending">
+        <input type="hidden" id="date" name="date" value="">
+        <input type="hidden" name="name" value="{{user.username}}">
+        <input type="hidden" id="reference" name="reference" value="">
+        <input type="hidden" name="gateway" value="btc">
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form>
+
+    <!-- PayPal -->
+    <form method="POST" class="transfer-card" id="paypal">
+      {% csrf_token %}
+      <div class="transfer-header">
+        <div class="icon paypal"><i class="fab fa-paypal"></i></div>
+        <div><h4>PayPal</h4><p>Transfer via email</p></div>
+      </div>
+      <div class="input-field"><label>PayPal Email</label><input type="email" name="paypal_address" placeholder="Enter PayPal email"></div>
+      <div class="input-field"><label>Amount</label><input type="number" name="amount" placeholder="Enter amount">
+        <input type="hidden" name="status" value="Pending">
+        <input type="hidden" id="date" name="date" value="">
+        <input type="hidden" name="name" value="{{user.username}}">
+        <input type="hidden" id="reference" name="reference" value="">
+        <input type="hidden" name="gateway" value="paypal">
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form>
+
+    <!-- Wise -->
+    <form method="POST" class="transfer-card" id="wise">
+      {% csrf_token %}
+      <div class="transfer-header">
+        <div class="icon wise"><i class="fa fa-exchange-alt"></i></div>
+        <div><h4>Wise Transfer</h4><p>Send with lower fees</p></div>
+      </div>
+      <div class="input-field"><label>Recipient Email</label><input type="email" name="wise_address" placeholder="Enter recipient email"></div>
+      <div class="input-field"><label>Amount</label><input type="number" name="amount" placeholder="Enter amount">
+        <input type="hidden" name="status" value="Pending">
+        <input type="hidden" id="date" name="date" value="">
+        <input type="hidden" name="name" value="{{user.username}}">
+        <input type="hidden" id="reference" name="reference" value="">
+        <input type="hidden" name="gateway" value="wise">
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form>
+
+    <!-- Cash App -->
+    <form method="POST" class="transfer-card" id="cashapp">
+      {% csrf_token %}
+      <div class="transfer-header">
+        <div class="icon cashapp"><i class="fa fa-dollar-sign"></i></div>
+        <div><h4>Cash App</h4><p>Quick mobile transfer</p></div>
+      </div>
+      <div class="input-field"><label>Cash Tag</label><input type="text" name="cashapp" placeholder="Enter Cash App tag"></div>
+      <div class="input-field"><label>Amount</label><input type="number" name="amount" placeholder="Enter amount">
+        <input type="hidden" name="status" value="Pending">
+        <input type="hidden" id="date" name="date" value="">
+        <input type="hidden" name="name" value="{{user.username}}">
+        <input type="hidden" id="reference" name="reference" value="">
+        <input type="hidden" name="gateway" value="cashapp">
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    function generateTransactionDetails() {
+      document.querySelectorAll('#date').forEach(dateField => {
+        dateField.value = new Date().toISOString().split('T')[0];
+      });
+      document.querySelectorAll('#reference').forEach(refField => {
+        const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const time = Date.now().toString().slice(-6);
+        refField.value = `TXN-${time}-${random}`;
+      });
+    }
+    document.addEventListener("DOMContentLoaded", generateTransactionDetails);
+
+    function showCard() {
+      const selected = document.getElementById("transferSelect").value;
+      document.querySelectorAll(".transfer-card").forEach(card => {
+        card.classList.remove("active");
+        if (card.id === selected) card.classList.add("active");
+      });
+    }
+  </script>
+  <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=v9YQHkBe68HP"></script>
+  <script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper"}</script>
+  <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+</body>
+{% endblock content %}
+</html>
